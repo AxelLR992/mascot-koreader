@@ -121,5 +121,4 @@ Settled:
 - Desktop tests are plain `luajit` scripts, no test framework dependency.
 - Scope of this repository: the engine plus one example character, a generic Frankenstein's-monster-style character. Other characters live in their own repositories with their own licenses.
 
-Open:
-- License for code, and for the bundled example character's art and phrases (possibly separate).
+- Licenses: MIT for code, CC BY 4.0 for the bundled example character's art and phrases.

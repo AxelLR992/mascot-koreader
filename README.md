@@ -39,4 +39,7 @@ Conventions (Keep a Changelog, Semantic Versioning, gitmoji) are described in [C
 
 ## License
 
-Not chosen yet.
+- Code: [MIT](LICENSE).
+- Bundled example character (art and phrases): [CC BY 4.0](LICENSE-ART.md).
+
+Characters distributed in other repositories carry their own licenses.
