@@ -63,6 +63,15 @@ Pure logic (everything under `mascot/` except adapters) must not require KOReade
 
 The engine falls back to the pack's default locale when a phrase or keyword list is missing. Phrases with unfillable slots are skipped.
 
+## State
+
+`mascot/state.lua` holds what a character has absorbed: decaying theme scores (the strongest is the *obsession*, with hysteresis so it does not flip-flop), personality axes (-100..100), per-book totals, and per-day page counts for streaks. It is plain serialisable data; the glue code persists it per character.
+
+- A page counts once per book position. Position is bucketed (1000 per book), so font-size changes that renumber pages do not cause double counting.
+- The glue code decides *when* a page is worth feeding (dwell time, using a timer) and runs text extraction off the page-turn path.
+- Axes are defined by the character pack. Each axis lists effects of themes, events, tone and time of day. A theme only pushes when it is above its baseline, so not reading something never pushes an axis the other way; it only decays toward neutral.
+- Baselines (the "average page") are optional locale data and default to 0. Calibrating them needs real books and is a later task.
+
 ## Offline brain
 
 Signals (keyword counts per theme, sentiment, events, style, names, time of day) -> slow-moving state (axes, influences, obsession) -> trigger evaluation -> weighted phrase choice -> slot filling. Only pages actually read, once each, feed the state.

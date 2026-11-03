@@ -13,4 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimal `mascot.koplugin` skeleton with a "Mascot" entry in the tools menu.
 - Phase 0 spike plugin (`spikes/mascotspike.koplugin`) that checks page text, settings, HTTPS, sprites and events on a device.
 - Engine: UTF-8 tokenizer and locale-driven signal extraction (`mascot.tokenizer`, `mascot.signals`), with a dependency-free test runner (`luajit tests/run.lua`).
+- Engine: persistent character state (`mascot.state`): once-per-position page counting, decaying theme scores with an obsession, personality axes driven by pack-defined effects, per-book totals, daily counts and streaks.
 - Desktop emulator workflow: `scripts/dev-link.sh`, `scripts/dev-run.sh` and `docs/DEVELOPMENT.md`.
