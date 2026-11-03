@@ -85,7 +85,7 @@ Signals (keyword counts per theme, sentiment, events, style, names, time of day)
 
 ## Phases
 
-### Phase 0: Spike
+### Phase 0: Spike (done for Kindle; see findings)
 Confirm on a real Kindle (and a Kobo if available) that a plugin can: be loaded from a custom directory, read the current page text, persist settings, make an async HTTPS request, draw an image widget, and integrate with Simple UI. Hello-world LLM call.
 
 ### Phase 1: Engine core
@@ -106,27 +106,33 @@ Provider client, prompt builder, scheduling, cache, fallback, settings UI and pr
 ### Phase 6: Tooling and docs
 Pack validator CLI, pack template, authoring guide, release packaging (zip with the plugin folder).
 
-## Phase 0 findings (partial)
+## Phase 0 findings
 
-Measured with `spikes/mascotspike.koplugin`.
+Measured with `spikes/mascotspike.koplugin`. Phase 0 is complete for the Kindle; Kobo and PDF are deferred.
 
 | Check | Emulator (KOReader 2026.07.2) | Kindle Basic 4 (KOReader 2026.03) |
 |---|---|---|
 | Plugin loads, menu entry (Tools > More tools) | yes | yes |
-| Device facts | 1072x1364, 300 dpi | 1072x1448, 300 dpi, LuaJIT arm, 218 of 474 MB RAM available |
+| Device facts | 1072x1364, 300 dpi | 1072x1448, 300 dpi, LuaJIT arm, ~210 of 474 MB RAM available |
 | Settings persist across restarts | yes | yes |
-| Suspend and resume events reach the plugin | not tested | yes (1 and 1) |
-| Page text (reflowable) | yes: ~750 chars/page, 2.3 ms average over 27 page turns | **not tested yet** |
-| HTTPS from a subprocess, UI not blocked | yes: 200 OK in 333 ms, UI loop kept ticking | **not tested yet** |
-| Sprite at integer scale | yes: crisp nearest-neighbour edges, alpha works | **not tested yet** |
+| Suspend and resume events reach the plugin | not tested | yes |
+| Page and reader-ready events reach the plugin | yes | yes (13 page turns, 1 ready) |
+| Page text, reflowable | ~750 chars/page, 2.3 ms average per page turn | ~700 chars/page, **29 ms average per page turn** (1 ms for a single call) |
+| HTTPS from a subprocess, UI not blocked | 200 OK in 333 ms | 200 OK in 516 ms, UI loop kept ticking (3 ticks, 2.6 expected) |
+| Sprite at integer scale | crisp nearest-neighbour edges, alpha works | drawn without errors; crispness not judged |
 | Simple UI detected | no (not installed) | yes |
 
-Observations:
-- The Kindle runs KOReader **2026.03**, older than the emulator build. Target the older API and verify on the device.
-- The Kindle has about 218 MB of free RAM, and its Lua heap read **164 MB** versus 17 MB in the emulator. The cause is unknown (possibly caches in other plugins). Budget a few MB for Mascot and measure before and after.
-- The "launches" counter increments on every plugin instantiation (file manager and each opened book), not once per KOReader start.
+Consequences for the design:
+- **Page text is cheap but not free.** About 29 ms per page turn on the Kindle. Do not extract text synchronously in the page-turn handler: schedule it shortly after the turn, and only for pages the user dwells on (the plan already counts a page only after a few seconds).
+- **HTTPS works** with `ssl.https` in a subprocess through `Trapper`, so the online brain is feasible. Latency is around half a second for a tiny request, so LLM calls must be asynchronous and cached.
+- **Memory.** About 210 MB of RAM is free on the Kindle. The Lua heap read 164 MB in the file manager (with Simple UI's home screen) and 17 MB inside a book, so the large figure is a file-manager effect, not a baseline. Keep Mascot to a few MB.
+- **Target KOReader 2026.03** as the minimum. The Kindle runs it, and it is older than the emulator build.
+- The "launches" counter increments on every plugin instantiation (file manager and each opened book), not once per KOReader start. Do not use plugin `init` as a "session started" signal.
 
-Still to do on the Kindle: page text and per-page cost (open an EPUB, turn pages), HTTPS (needs Wi-Fi), sprite drawing, and page events.
+Deferred:
+- PDF/DjVu page text (code path exists in the spike, untested on either platform).
+- Kobo (waiting for a device).
+- The Simple UI card integration (Phase 3).
 
 ## Decisions
 

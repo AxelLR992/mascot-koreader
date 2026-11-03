@@ -20,7 +20,7 @@ See `PLAN.md` for the roadmap and `README.md` for the overview.
 - **Offline is the default and must always work.** The online brain is an opt-in upgrade and must fall back silently to offline on any failure.
 - **Never block reading.** No synchronous network calls, no heavy work on the UI path.
 - **Privacy.** Nothing leaves the device unless the user has explicitly enabled online mode, and the opt-in screen must list what is sent.
-- **Targets:** KOReader on Kindle (jailbroken) and Kobo. Also keep Simple UI compatibility in mind (the maintainer's Kindle uses it).
+- **Targets:** KOReader on Kindle (jailbroken) and Kobo. Minimum supported KOReader version: **2026.03** (what the maintainer's Kindle runs); do not rely on newer APIs without checking. Also keep Simple UI compatibility in mind (the maintainer's Kindle uses it).
 
 ## Conventions
 
