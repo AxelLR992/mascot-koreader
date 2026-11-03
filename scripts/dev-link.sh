@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Symlink the plugin into a KOReader desktop emulator build, so edits show up after a restart.
+# Symlink the plugin (and any spikes) into a KOReader desktop emulator build, so edits show up after a restart.
 #
 #   KOREADER_DIR   KOReader checkout (default: ~/Projects/koreader)
 set -euo pipefail
@@ -13,5 +13,7 @@ if [[ ! -d "${emulator[0]}/koreader/plugins" ]]; then
     exit 1
 fi
 
-ln -sfn "${repo}/mascot.koplugin" "${emulator[0]}/koreader/plugins/mascot.koplugin"
-echo "Linked ${repo}/mascot.koplugin -> ${emulator[0]}/koreader/plugins/mascot.koplugin"
+for plugin in "${repo}/mascot.koplugin" "${repo}"/spikes/*.koplugin; do
+    ln -sfn "${plugin}" "${emulator[0]}/koreader/plugins/$(basename "${plugin}")"
+    echo "Linked ${plugin}"
+done
