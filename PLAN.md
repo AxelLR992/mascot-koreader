@@ -23,8 +23,10 @@ An extendable KOReader companion plugin. Characters are data-only packs; dialogu
 mascot.koplugin/
   _meta.lua
   main.lua                 KOReader glue: menus, events, sleep screen, Simple UI card
-  engine/
-    reader.lua             page text -> signals (themes, tone, names, events, time)
+  mascot/                  engine modules, namespaced (require("mascot.signals")) so they cannot
+                           collide with modules of other plugins on KOReader's package.path
+    tokenizer.lua          page text -> lowercase words
+    signals.lua            words -> signals (keyword counts, tone, rhythm, dialogue)
     state.lua              persistent per-character state
     brain_offline.lua      trigger evaluation + weighted template selection + slot filling
     brain_online.lua       LLM client, prompt builder, scheduling, cache
@@ -35,10 +37,10 @@ mascot.koplugin/
       sprites/
       locales/<code>.json
 docs/                      pack authoring guide, schema reference
-tests/                     desktop-runnable tests for the pure logic
+tests/                     desktop-runnable tests for the pure logic (luajit tests/run.lua)
 ```
 
-Pure logic (everything under `engine/` except adapters) must not require KOReader modules so it can be tested on a desktop.
+Pure logic (everything under `mascot/` except adapters) must not require KOReader modules so it can be tested on a desktop.
 
 ## Character pack format
 
@@ -119,7 +121,7 @@ Measured with `spikes/mascotspike.koplugin`. Phase 0 is complete for the Kindle;
 | Page and reader-ready events reach the plugin | yes | yes (13 page turns, 1 ready) |
 | Page text, reflowable | ~750 chars/page, 2.3 ms average per page turn | ~700 chars/page, **29 ms average per page turn** (1 ms for a single call) |
 | HTTPS from a subprocess, UI not blocked | 200 OK in 333 ms | 200 OK in 516 ms, UI loop kept ticking (3 ticks, 2.6 expected) |
-| Sprite at integer scale | crisp nearest-neighbour edges, alpha works | drawn without errors; crispness not judged |
+| Sprite at integer scale | crisp nearest-neighbour edges, alpha works | identical to the emulator: crisp edges, alpha works |
 | Simple UI detected | no (not installed) | yes |
 
 Consequences for the design:

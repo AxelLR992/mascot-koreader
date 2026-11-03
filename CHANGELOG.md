@@ -12,4 +12,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MIT license for the code and CC BY 4.0 for the bundled example character.
 - Minimal `mascot.koplugin` skeleton with a "Mascot" entry in the tools menu.
 - Phase 0 spike plugin (`spikes/mascotspike.koplugin`) that checks page text, settings, HTTPS, sprites and events on a device.
+- Engine: UTF-8 tokenizer and locale-driven signal extraction (`mascot.tokenizer`, `mascot.signals`), with a dependency-free test runner (`luajit tests/run.lua`).
 - Desktop emulator workflow: `scripts/dev-link.sh`, `scripts/dev-run.sh` and `docs/DEVELOPMENT.md`.

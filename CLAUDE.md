@@ -41,6 +41,7 @@ See `PLAN.md` for the roadmap and `README.md` for the overview.
 
 ### Code
 - Lua, targeting the LuaJIT bundled with KOReader. No external native dependencies in the offline path.
+- Engine modules live under `mascot.koplugin/mascot/` and are required with the `mascot.` prefix, because KOReader puts every plugin on one shared `package.path`.
 - Keep pure logic (signals, state, brains, pack validation) free of KOReader requires so it can be tested on a desktop with plain `lua`/`luajit`.
 - KOReader-specific glue stays in `main.lua` and a small number of adapter modules.
 - Match the surrounding code's style, naming and comment density.
@@ -51,10 +52,10 @@ See `PLAN.md` for the roadmap and `README.md` for the overview.
 mascot.koplugin/
   _meta.lua
   main.lua
-  engine/        signals, state, brains, pack loader
+  mascot/        engine modules (signals, state, brains, pack loader), required as `mascot.<module>`
   characters/    one directory per character: character.json, sprites/, locales/
 docs/            pack authoring guide, schema reference
-tests/           desktop-runnable tests for the pure logic
+tests/           desktop-runnable tests for the pure logic: `luajit tests/run.lua`
 ```
 
 ## Open questions

@@ -47,8 +47,14 @@ In the emulator, open the top menu, then the tools (gear) menu, then **Mascot**.
 
 ## Tests
 
-Pure logic is tested on the desktop with plain `luajit`, with no KOReader and no framework.
-(Added with the engine, in `tests/`.)
+Pure logic is tested on the desktop with plain `luajit`, with no KOReader and no framework:
+
+```
+luajit tests/run.lua
+```
+
+It runs every `tests/test_*.lua` and exits non-zero if any test fails. Helpers are in `tests/lib.lua`
+(`T.test`, `T.eq`, `T.throws`). Test locales live in `tests/fixtures/`.
 
 ## Real device
 
