@@ -46,22 +46,12 @@ Pure logic (everything under `mascot/` except adapters) must not require KOReade
 
 **Packs are data, never code.** The engine only reads them. A pack from a stranger cannot read files or the API key.
 
-`character.json`:
-- `schema_version`
-- identity: id, display name, author, version, default locale, supported locales
-- sprites: mapping from mood to file
-- personality axes: id, two poles, step size, decay
-- influences: recipes of weighted signals (e.g. `horror = { fear = 0.4, night = 0.25, _dark = 0.1 }`)
-- axis effects: how signals push each axis
-- triggers: conditions (time window, streak, chapter end, book finished, influence above N, ...) mapped to phrase groups
+The full draft is in [docs/PACK_FORMAT.md](docs/PACK_FORMAT.md). In short:
 
-`locales/<code>.json`:
-- phrase banks grouped by trigger/influence, with slots (`{book}`, `{name}`, `{theme}`, `{word}`)
-- keyword lists per theme for that language
-- inline personality branches
-- persona prompt for the online brain
-
-The engine falls back to the pack's default locale when a phrase or keyword list is missing. Phrases with unfillable slots are skipped.
+- `character.json`: identity, sprites per mood, personality axes with their effects, ordered mood rules, and triggers (`on` an engine event, `if` declarative conditions, `phrases` group, `priority`, `weight`, `chance`, `cooldown`).
+- `locales/<code>.json`: phrase groups (strings or objects with `if`/`weight`/`short`), grammatical labels for themes, optional extra keywords, and the persona prompt for the online brain.
+- The engine owns the **vocabulary** of signals (theme and event ids) and a shared **lexicon** per language (`mascot.koplugin/lexicon/<code>.json`), so a pack author writes reactions and phrases, not dictionaries.
+- Personality is expressed with conditions on phrase entries, not with inline branching syntax inside strings.
 
 ## State
 
