@@ -106,6 +106,28 @@ Provider client, prompt builder, scheduling, cache, fallback, settings UI and pr
 ### Phase 6: Tooling and docs
 Pack validator CLI, pack template, authoring guide, release packaging (zip with the plugin folder).
 
+## Phase 0 findings (partial)
+
+Measured with `spikes/mascotspike.koplugin`.
+
+| Check | Emulator (KOReader 2026.07.2) | Kindle Basic 4 (KOReader 2026.03) |
+|---|---|---|
+| Plugin loads, menu entry (Tools > More tools) | yes | yes |
+| Device facts | 1072x1364, 300 dpi | 1072x1448, 300 dpi, LuaJIT arm, 218 of 474 MB RAM available |
+| Settings persist across restarts | yes | yes |
+| Suspend and resume events reach the plugin | not tested | yes (1 and 1) |
+| Page text (reflowable) | yes: ~750 chars/page, 2.3 ms average over 27 page turns | **not tested yet** |
+| HTTPS from a subprocess, UI not blocked | yes: 200 OK in 333 ms, UI loop kept ticking | **not tested yet** |
+| Sprite at integer scale | yes: crisp nearest-neighbour edges, alpha works | **not tested yet** |
+| Simple UI detected | no (not installed) | yes |
+
+Observations:
+- The Kindle runs KOReader **2026.03**, older than the emulator build. Target the older API and verify on the device.
+- The Kindle has about 218 MB of free RAM, and its Lua heap read **164 MB** versus 17 MB in the emulator. The cause is unknown (possibly caches in other plugins). Budget a few MB for Mascot and measure before and after.
+- The "launches" counter increments on every plugin instantiation (file manager and each opened book), not once per KOReader start.
+
+Still to do on the Kindle: page text and per-page cost (open an EPUB, turn pages), HTTPS (needs Wi-Fi), sprite drawing, and page events.
+
 ## Decisions
 
 Settled:
