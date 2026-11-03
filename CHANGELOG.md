@@ -10,3 +10,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial project scaffolding: `README.md`, `PLAN.md`, `CLAUDE.md` and this changelog.
 - MIT license for the code and CC BY 4.0 for the bundled example character.
+- Minimal `mascot.koplugin` skeleton with a "Mascot" entry in the tools menu.
+- Desktop emulator workflow: `scripts/dev-link.sh`, `scripts/dev-run.sh` and `docs/DEVELOPMENT.md`.
